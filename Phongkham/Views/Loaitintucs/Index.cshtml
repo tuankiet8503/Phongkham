@@ -1,0 +1,42 @@
+﻿@model IEnumerable<Phongkham.Models.Loaitintuc>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_AdLayout.cshtml";
+}
+
+<div class="container">
+    <h1 class="mt-4">Danh sách loại Tin Tức</h1>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="row justify-content-end">
+                <div class="col-auto">
+                    <a type="button" class="btn btn-primary" asp-action="Create">Thêm mới</a>
+                </div>
+            </div>
+            <table class="table">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Tên loại Tin Tức</th>
+                        <th scope="col">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@item.Id">Sửa</a>
+                                    <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Id">Xóa</a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

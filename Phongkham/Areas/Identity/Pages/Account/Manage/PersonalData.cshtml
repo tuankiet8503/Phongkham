@@ -1,0 +1,72 @@
+﻿@page
+@model PersonalDataModel
+@{
+    ViewData["Title"] = "Personal Data";
+    ViewData["ActivePage"] = ManageNavPages.PersonalData;
+
+    // Đặt lại kiểu dữ liệu của TUser là ApplicationUser
+    var userManager = HttpContext.RequestServices.GetRequiredService<UserManager<ApplicationUser>>();
+    var user = await userManager.GetUserAsync(User);
+
+    string selectedLayout = "~/Views/Shared/_Layout.cshtml"; // Layout mặc định
+
+    if (user != null)
+    {
+        var roles = await userManager.GetRolesAsync(user);
+
+        if (roles.Contains("Admin"))
+        {
+            selectedLayout = "~/Views/Shared/_AdLayout.cshtml"; // Layout cho Admin
+        }
+        else if (roles.Contains("Dentist"))
+        {
+            selectedLayout = "~/Views/Shared/_LayoutDentist.cshtml"; // Layout cho Dentist
+        }
+    }
+
+    Layout = selectedLayout;
+}
+
+<h3>@ViewData["Title"]</h3>
+
+<div class="row">
+    <div class="col-md-3">
+        <ul class="nav flex-column nav-pills">
+            <li class="nav-item">
+                <a class="nav-link @ManageNavPages.IndexNavClass(ViewContext)" asp-page="./Index">Profile</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @ManageNavPages.EmailNavClass(ViewContext)" asp-page="./Email">Email</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @ManageNavPages.ChangePasswordNavClass(ViewContext)" asp-page="./ChangePassword">Password</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @ManageNavPages.ExternalLoginsNavClass(ViewContext)" asp-page="./ExternalLogins">External Logins</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" asp-page="./PersonalData">Personal Data</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @ManageNavPages.TwoFactorAuthenticationNavClass(ViewContext)" asp-page="./TwoFactorAuthentication">Two-factor authentication</a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="col-md-9">
+        <p>Your account contains personal data that you have given us. This page allows you to download or delete that data.</p>
+        <p>
+            <strong>Deleting this data will permanently remove your account, and this cannot be recovered.</strong>
+        </p>
+        <form id="download-data" asp-page="DownloadPersonalData" method="post">
+            <button class="btn btn-primary" type="submit">Download</button>
+        </form>
+        <p>
+            <a id="delete" asp-page="DeletePersonalData" class="btn btn-danger">Delete</a>
+        </p>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

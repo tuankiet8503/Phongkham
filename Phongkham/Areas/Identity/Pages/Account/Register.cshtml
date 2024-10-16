@@ -1,0 +1,85 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card mt-5">
+                <div class="card-header text-center">
+                    <h3>Register</h3>
+                </div>
+                <div class="card-body">
+                    <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+                        <div class="form-group">
+                            <label for="fullName">Full Name</label>
+                            <input id="fullName" asp-for="Input.FullName" class="form-control" autocomplete="fullname" aria-required="true" />
+                            <span asp-validation-for="Input.FullName" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input id="email" asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                            <span asp-validation-for="Input.Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input id="password" asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+                            <span asp-validation-for="Input.Password" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="confirmPassword">Confirm Password</label>
+                            <input id="confirmPassword" asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+                            <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="role">Role</label>
+                            <select id="role" asp-for="Input.Role" asp-items="@Model.Input.RoleList" class="form-control" aria-required="true">
+                                <option value="">Select Role</option>
+                            </select>
+                            <span asp-validation-for="Input.Role" class="text-danger"></span>
+                        </div>
+
+                        <div id="chuyenmonDiv" class="form-group" style="display: none;">
+                            <label for="chuyenMonId">Specialization</label>
+                            <select id="chuyenMonId" asp-for="Input.ChuyenMonId" asp-items="@Model.Input.ChuyenMonList" class="form-control" aria-required="true">
+                                <option value="">Select Specialization</option>
+                            </select>
+                            <span asp-validation-for="Input.ChuyenMonId" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <button id="registerSubmit" type="submit" class="btn btn-primary">Register</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var roleSelect = document.getElementById("role");
+            var specializationDiv = document.getElementById("chuyenmonDiv");
+
+            function toggleSpecializationVisibility() {
+                specializationDiv.style.display = roleSelect.value === "Dentist" ? "block" : "none";
+            }
+
+            roleSelect.addEventListener("change", function () {
+                toggleSpecializationVisibility();
+            });
+
+            toggleSpecializationVisibility(); // Initial check
+        });
+    </script>
+}

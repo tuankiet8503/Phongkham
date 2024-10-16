@@ -1,0 +1,52 @@
+﻿@model IEnumerable<Phongkham.Models.lichKham>
+
+@{
+    ViewData["Title"] = "Danh sách lịch khám";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="stylesheet" href="~/css/styles.css" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<h1 class="text-center">@ViewData["Title"]</h1>
+@if (TempData["SuccessMessage"] != null)
+{
+    <div id="successMessage" class="custom-alert">
+        <i class="fas fa-check-circle" style="color: green"></i>
+        @TempData["SuccessMessage"]
+    </div>
+}
+<div class="row justify-content-end">
+    <div class="col-auto">
+        <a type="button" class="btn btn-primary" asp-action="TaolichKham">Đặt Lịch</a>
+    </div>
+</div>
+<div class="container">
+    <table class="table table-striped table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Ngày Đặt</th>
+                <th scope="col">Tên người đặt</th>
+                <th scope="col">Số Điện Thoại</th>
+                <th scope="col">Ca Khám</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item?.NgayDat.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@item?.UserName</td>
+                    <td>@item?.phone</td>
+                    <td>@item?.cakham?.KhungGio.TimeSlot</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<script>
+    $(document).ready(function () {
+        if ($("#successMessage").length > 0) {
+            $("#successMessage").fadeIn().delay(10000).fadeOut();
+        }
+    });
+</script>

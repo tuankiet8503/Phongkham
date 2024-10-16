@@ -1,0 +1,85 @@
+﻿@page
+@model LoginModel
+
+@{
+    ViewData["Title"] = "Log in";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card mt-5">
+                <div class="card-header text-center">
+                    <h3>@ViewData["Title"]</h3>
+                </div>
+                <div class="card-body">
+                    <form id="account" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                        <div class="form-floating mb-3">
+                            <input asp-for="Input.Email" class="form-control" autocomplete="username" placeholder="name@example.com" />
+                            <label asp-for="Input.Email">Email</label>
+                            <span asp-validation-for="Input.Email" class="text-danger"></span>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input asp-for="Input.Password" class="form-control" autocomplete="current-password" placeholder="password" />
+                            <label asp-for="Input.Password">Password</label>
+                            <span asp-validation-for="Input.Password" class="text-danger"></span>
+                        </div>
+                        <div class="form-check mb-3 ms-2">
+                            <input asp-for="Input.RememberMe" class="form-check-input" style="margin-left: 7px;" />
+                            <label asp-for="Input.RememberMe" class="form-check-label"></label>
+                        </div>
+                        <div class="d-grid mb-3">
+                            <button id="login-submit" type="submit" class="btn btn-primary">Log in</button>
+                        </div>
+                    </form>
+
+                    <div class="d-grid mb-3">
+                        <form id="external-login" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+                            <button type="submit" class="btn-google" name="provider" value="Google" title="Log in using your Google account">Log in with Google</button>
+                        </form>
+                    </div>
+
+                    <div class="mt-3">
+                        <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
+                    </div>
+                    <div class="mt-2">
+                        <a asp-page="./RegisterWithoutAdmin" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
+                    </div>
+                    <div class="mt-2">
+                        <a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Resend email confirmation</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+<style>
+    .btn-google {
+        background-color: #db4437;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 5px;
+        text-align: center;
+        display: inline-block;
+        cursor: pointer;
+        transition: background-color 0.3s, box-shadow 0.3s;
+    }
+
+        .btn-google:hover {
+            background-color: #c23321;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-google:active {
+            background-color: #a72819;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2) inset;
+        }
+</style>

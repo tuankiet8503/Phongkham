@@ -1,0 +1,109 @@
+﻿@page
+@model ExternalLoginsModel
+@{
+    ViewData["Title"] = "Manage your external logins";
+    ViewData["ActivePage"] = ManageNavPages.ExternalLogins;
+
+    // Đặt lại kiểu dữ liệu của TUser là ApplicationUser
+    var userManager = HttpContext.RequestServices.GetRequiredService<UserManager<ApplicationUser>>();
+    var user = await userManager.GetUserAsync(User);
+
+    string selectedLayout = "~/Views/Shared/_Layout.cshtml"; // Layout mặc định
+
+    if (user != null)
+    {
+        var roles = await userManager.GetRolesAsync(user);
+
+        if (roles.Contains("Admin"))
+        {
+            selectedLayout = "~/Views/Shared/_AdLayout.cshtml"; // Layout cho Admin
+        }
+        else if (roles.Contains("Dentist"))
+        {
+            selectedLayout = "~/Views/Shared/_LayoutDentist.cshtml"; // Layout cho Dentist
+        }
+    }
+
+    Layout = selectedLayout;
+}
+
+<h3>@ViewData["Title"]</h3>
+<partial name="_StatusMessage" for="StatusMessage" />
+
+<div class="row">
+    <div class="col-md-3">
+        <ul class="nav flex-column nav-pills">
+            <li class="nav-item">
+                <a class="nav-link @ManageNavPages.IndexNavClass(ViewContext)" asp-page="./Index">Profile</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @ManageNavPages.EmailNavClass(ViewContext)" asp-page="./Email">Email</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @ManageNavPages.ChangePasswordNavClass(ViewContext)" asp-page="./ChangePassword">Password</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" asp-page="./ExternalLogins">External Logins</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @ManageNavPages.TwoFactorAuthenticationNavClass(ViewContext)" asp-page="./TwoFactorAuthentication">Two-factor authentication</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @ManageNavPages.PersonalDataNavClass(ViewContext)" asp-page="./PersonalData">Personal data</a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="col-md-9">
+        @if (Model.CurrentLogins?.Count > 0)
+        {
+            <h4>Registered Logins</h4>
+            <table class="table">
+                <tbody>
+                    @foreach (var login in Model.CurrentLogins)
+                    {
+                        <tr>
+                            <td id="@($"login-provider-{login.LoginProvider}")">@login.ProviderDisplayName</td>
+                            <td>
+                                @if (Model.ShowRemoveButton)
+                                {
+                                    <form id="@($"remove-login-{login.LoginProvider}")" asp-page-handler="RemoveLogin" method="post">
+                                        <div>
+                                            <input asp-for="@login.LoginProvider" name="LoginProvider" type="hidden" />
+                                            <input asp-for="@login.ProviderKey" name="ProviderKey" type="hidden" />
+                                            <button type="submit" class="btn btn-primary" title="Remove this @login.ProviderDisplayName login from your account">Remove</button>
+                                        </div>
+                                    </form>
+                                }
+                                else
+                                {
+                                    @: &nbsp;
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+        @if (Model.OtherLogins?.Count > 0)
+        {
+            <h4>Add another service to log in.</h4>
+            <hr />
+            <form id="link-login-form" asp-page-handler="LinkLogin" method="post" class="form-horizontal">
+                <div id="socialLoginList">
+                    <p>
+                        @foreach (var provider in Model.OtherLogins)
+                        {
+                            <button id="@($"link-login-button-{provider.Name}")" type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
+                        }
+                    </p>
+                </div>
+            </form>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

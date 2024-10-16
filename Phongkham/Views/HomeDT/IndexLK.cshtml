@@ -1,0 +1,40 @@
+﻿@{
+    ViewData["Title"] = "Danh sách lịch khám";
+    Layout = "~/Views/Shared/_LayoutDentist.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/styles.css" />
+</head>
+<body>
+    <div class="container">
+        <h2>Danh sách lịch khám</h2>
+        <table class="table table-striped table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Ngày Đặt</th>
+                    <th scope="col">Tên người đặt</th>
+                    <th scope="col">Số Điện Thoại</th>
+                    <th scope="col">Ca Khám</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in ViewData["lichKham"] as List<Phongkham.Models.lichKham>)
+                {
+                    <tr>
+                        <td>@item?.NgayDat.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>@item?.UserName</td>
+                        <td>@item?.phone</td>
+                        <td>@item?.cakham?.KhungGio.TimeSlot</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

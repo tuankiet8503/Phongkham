@@ -1,0 +1,160 @@
+﻿@model Phongkham.Models.lichKham
+@using Phongkham.Models
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    ViewBag.Title = "Tạo Lịch Khám";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <h2 class="mt-4">Tạo Lịch Khám</h2>
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger mt-3">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    <form asp-action="TaolichKham" method="post" class="mt-4">
+        @Html.AntiForgeryToken()
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="ChuyenMon">Chuyên Môn</label>
+                    <select id="ChuyenMon" name="selectedChuyenMonId" class="form-control" required>
+                        <option value="">Chọn Chuyên Môn</option>
+                        @foreach (var chuyenMon in ViewBag.ChuyenMons)
+                        {
+                            <option value="@chuyenMon.Id">@chuyenMon.Name</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="form-group" id="NhaSiGroup">
+                    <label for="NhaSi">Nha Sĩ</label>
+                    <select id="NhaSi" name="selectedNhaSiId" class="form-control" required>
+                        <option value="">Chọn Nha Sĩ</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="CaKhamGroup">
+                    <label for="CaKham">Ca Khám</label>
+                    <select id="CaKham" name="CakhamId" class="form-control" required>
+                        <option value="">Chọn Ca Khám</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="GiaGroup">
+                    <label for="Gia">Giá</label>
+                    <input type="text" class="form-control" id="Gia" name="Gia" readonly>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <input type="hidden" id="PatientId" name="PatientId" value="@UserManager.GetUserAsync(User).Result.Id" />
+
+                <div class="form-group">
+                    <label for="UserName">Tên Bệnh Nhân</label>
+                    <input type="text" class="form-control" id="UserName" name="UserName" value="@UserManager.GetUserAsync(User).Result.FullName" required readonly>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Số Điện Thoại</label>
+                    <input type="text" class="form-control" id="phone" name="phone" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="NgayDat">Ngày Đặt</label>
+                    <input type="datetime-local" class="form-control" id="NgayDat" name="NgayDat" value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss")" required>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Đặt Lịch</button>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#ChuyenMon').change(function () {
+                var selectedChuyenMonId = $(this).val();
+                if (selectedChuyenMonId !== "") {
+                    $.ajax({
+                        url: '@Url.Action("GetNhaSisByChuyenMon", "DatlichKhams")',
+                        type: 'GET',
+                        data: { selectedChuyenMonId: selectedChuyenMonId },
+                        success: function (response) {
+                            $('#NhaSi').empty().append($('<option>', { value: '', text: 'Chọn Nha Sĩ' }));
+                            $.each(response, function (index, item) {
+                                $('#NhaSi').append($('<option>', {
+                                    value: item.userId,
+                                    text: item.fullName
+                                }));
+                            });
+                            $('#NhaSiGroup').show();
+                        },
+                        error: function (xhr, status, error) {
+                            console.error(xhr.responseText);
+                        }
+                    });
+                } else {
+                    $('#NhaSiGroup').hide();
+                    $('#CaKhamGroup').hide();
+                    $('#GiaGroup').hide();
+                }
+            });
+
+            $('#NhaSi').change(function () {
+                var selectedNhaSiId = $(this).val();
+                if (selectedNhaSiId !== "") {
+                    $.ajax({
+                        url: '@Url.Action("GetCaKhamsByNhaSi", "DatlichKhams")',
+                        type: 'GET',
+                        data: { selectedNhaSiId: selectedNhaSiId },
+                        success: function (response) {
+                            $('#CaKham').empty().append($('<option>', { value: '', text: 'Chọn Ca Khám' }));
+                            $.each(response, function (index, item) {
+                                $('#CaKham').append($('<option>', {
+                                    value: item.id,
+                                    text: item.caKham
+                                }));
+                            });
+                            $('#CaKhamGroup').show();
+                        },
+                        error: function (xhr, status, error) {
+                            console.error(xhr.responseText);
+                        }
+                    });
+                } else {
+                    $('#CaKhamGroup').hide();
+                    $('#GiaGroup').hide();
+                }
+            });
+
+            $('#CaKham').change(function () {
+                var selectedCaKhamId = $(this).val();
+                if (selectedCaKhamId !== "") {
+                    $.ajax({
+                        url: '@Url.Action("GetGiaByCaKham", "DatlichKhams")',
+                        type: 'GET',
+                        data: { selectedCaKhamId: selectedCaKhamId },
+                        success: function (response) {
+                            $('#Gia').val(response);
+                            $('#GiaGroup').show();
+                        },
+                        error: function (xhr, status, error) {
+                            console.error(xhr.responseText);
+                        }
+                    });
+                } else {
+                    $('#GiaGroup').hide();
+                }
+            });
+        });
+    </script>
+}

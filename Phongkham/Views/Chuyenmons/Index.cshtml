@@ -1,0 +1,33 @@
+﻿@model IEnumerable<Phongkham.Models.Chuyenmon>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_AdLayout.cshtml";
+}
+
+<h1>Danh sách chuyên môn</h1>
+<div class="row justify-content-end">
+    <div class="col-auto">
+        <a type="button" class="btn btn-primary" asp-action="Create">Thêm mới</a>
+    </div>
+</div>
+<table class="table table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">Tên</th>
+            <th scope="col">Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                <td>
+                    <a class="btn btn-info" asp-action="Edit" asp-route-id="@item.Id">Chỉnh sửa</a>
+                    <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Id">Xóa</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

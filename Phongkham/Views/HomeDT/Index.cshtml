@@ -1,0 +1,139 @@
+﻿@{
+    ViewData["Title"] = "Trang chủ nha sĩ";
+    Layout = "~/Views/Shared/_LayoutDentist.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <style>
+        .container1 {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            font-size: 28px;
+            color: #007bff;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #333;
+        }
+        .card1 {
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+            .card1 h3 {
+                margin-top: 0;
+                font-size: 22px;
+                color: #007bff;
+                border-bottom: 2px solid #007bff;
+                padding-bottom: 10px;
+                margin-bottom: 20px;
+            }
+
+            .card1 ul {
+                list-style-type: none;
+                padding-left: 0;
+            }
+
+                .card1 ul li {
+                    margin-bottom: 15px;
+                    padding: 10px;
+                    background-color: #fff;
+                    border-radius: 5px;
+                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                }
+
+                    .card1 ul li strong {
+                        color: #333;
+                        font-size: 18px;
+                    }
+
+                    .card1 ul li span {
+                        color: #555;
+                        font-size: 16px;
+                    }
+    </style>
+</head>
+
+<body>
+    <div class="container1">
+        <div class="card1">
+            <h3>Danh sách lịch khám</h3>
+            <ul>
+                @foreach (var item in ViewData["LichKham"] as List<Phongkham.Models.lichKham>)
+                {
+                    <li>
+                        <strong>@item.UserName</strong> - Số điện thoại: @item.phone
+                    </li>
+                }
+            </ul>
+        </div>
+
+        <div class="card1">
+            <h3>Danh sách tin tức</h3>
+            <ul>
+                @foreach (var item in ViewData["TinTuc"] as List<Phongkham.Models.Tintuc>)
+                {
+                    <li>
+                        <strong>@item.tieude</strong> - Ngày đăng: @item.NgayDang.ToShortDateString()
+                    </li>
+                }
+            </ul>
+        </div>
+
+        <div class="card1">
+            <h3>Danh sách câu hỏi từ bệnh nhân</h3>
+            <ul>
+                @foreach (var item in ViewData["Questions"] as List<Phongkham.Models.Questions>)
+                {
+                    <li>
+                        @item.Content
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
+
+<script>
+    var swiper = new Swiper('.swiper-container', {
+        autoplay: {
+            delay: 3000, // Thời gian chuyển đổi giữa các slide (ms)
+        },
+        loop: true, // Sử dụng vòng lặp
+        pagination: {
+            el: '.swiper-pagination', // Thêm điều hướng slider
+            clickable: true,
+        },
+        slidesPerView: 'auto', // Hiển thị số lượng slide tối đa có thể trên một slide
+        spaceBetween: 30, // Tạo khoảng cách giữa các slide
+        on: {
+            slideChange: function () {
+                // Tìm slide hiện tại và thêm class active
+                var activeSlide = this.slides[this.activeIndex];
+                activeSlide.classList.add('active');
+            },
+        },
+    });
+</script>

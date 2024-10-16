@@ -1,0 +1,86 @@
+﻿@model Phongkham.Models.Cakham
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_LayoutDentist.cshtml";
+}
+
+<style>
+    .form-container {
+        background-color: rgba(132, 112, 255, 0.8); /* Màu nền của form với độ trong suốt */
+        border-radius: 15px; /* Bo tròn góc của form */
+        padding: 20px;
+        margin-top: 50px; /* Khoảng cách giữa form và top của trang */
+        box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.5); /* Hiệu ứng bóng đổ */
+    }
+
+    .form-group {
+        margin-bottom: 20px; /* Khoảng cách giữa các trường */
+    }
+
+    .btn-save {
+        margin-right: 10px; /* Khoảng cách giữa nút Save và Back */
+    }
+</style>
+<div class="container body">
+    <div class="row justify-content-center">
+        <div class="col-md-6 form-container">
+            <h1 class="mt-4 text-center">Chỉnh sửa ca khám</h1>
+
+            <form asp-action="Edit">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="KhungGioId" class="control-label">Khung giờ</label>
+                    <select asp-for="KhungGioId" class="form-control" asp-items="ViewBag.KhungGioId"></select>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Gia" class="control-label">Giá</label>
+                    <input asp-for="Gia" class="form-control" id="gia-input" />
+                    <span asp-validation-for="Gia" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="NgayDang" class="control-label">Ngày Tạo</label>
+                    <input asp-for="NgayDang" class="form-control" />
+                    <span asp-validation-for="NgayDang" class="text-danger"></span>
+                </div>
+                <div class="form-group" style="display:none;">
+                    <label asp-for="DentistId" class="control-label"></label>
+                    <select asp-for="DentistId" class="form-control" asp-items="ViewBag.DentistId"></select>
+                </div>
+                <div class="form-group">
+                    <label asp-for="TrangThai" class="control-label">Trạng thái</label>
+                    <select asp-for="TrangThai" class="form-control" asp-items="ViewBag.TrangThaiList"></select>
+                </div>
+                <div class="form-group d-flex justify-content-center">
+                    <button type="submit" class="btn btn-primary btn-save mr-2">Save</button>
+                    <a type="button" class="btn btn-secondary" asp-action="Index">Back to List</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        function formatNumber(n) {
+            return n.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+
+        $(document).ready(function () {
+            // Format initial value
+            var initialGia = $('#gia-input').val();
+            $('#gia-input').val(formatNumber(initialGia));
+
+            $('#gia-input').on('input', function () {
+                $(this).val(formatNumber($(this).val()));
+            });
+
+            $('form').on('submit', function () {
+                var gia = $('#gia-input').val().replace(/\./g, '');
+                $('#gia-input').val(gia);
+            });
+        });
+    </script>
+}

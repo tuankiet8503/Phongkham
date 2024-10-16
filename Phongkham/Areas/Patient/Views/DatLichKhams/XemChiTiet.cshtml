@@ -1,0 +1,30 @@
+﻿@model Phongkham.Models.lichKham
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h1>Xem Chi Tiết Lịch Khám</h1>
+
+<h2>Thông Tin Lịch Khám</h2>
+<p>Ngày Đặt: @Model.NgayDat.ToString("dd/MM/yyyy HH:mm")</p>
+
+<h2>Chi Tiết Lịch Khám</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Tên Bác Sĩ</th>
+            <th>Giá</th>
+            <th>Tên Bác Sĩ</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var ctlichKham in Model.Clichkham)
+        {
+            <tr>
+                <td>@ctlichKham.TenNhaSi</td>
+                <td>@ctlichKham.TongGiaTien</td>
+                <td>@ctlichKham.TenBenhNhan</td>
+
+            </tr>
+        }
+    </tbody>
+</table>

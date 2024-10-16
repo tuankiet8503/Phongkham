@@ -1,0 +1,51 @@
+﻿@model IEnumerable<Phongkham.Models.ApplicationUser>
+@{
+    ViewBag.Title = "User Management";
+    Layout = "~/Views/Shared/_AdLayout.cshtml";
+    var userRoles = ViewBag.UserRoles as Dictionary<string, IList<string>>;
+    var selectedRole = ViewBag.SelectedRole as string;
+}
+
+<h2>Danh sách tài khoản</h2>
+<div class="row justify-content-end mb-3">
+    <div class="col-auto">
+        <a type="button" class="btn btn-primary" href="/Identity/Account/Register">Thêm mới</a>
+    </div>
+</div>
+<div class="row mb-3">
+    <div class="col">
+        <a href="@Url.Action("Index", new { role = (string)null })" class="btn @(string.IsNullOrEmpty(selectedRole) ? "btn-secondary" : "btn-outline-secondary")">Tất cả</a>
+        <a href="@Url.Action("Index", new { role = "Dentist" })" class="btn @(selectedRole == "Dentist" ? "btn-secondary" : "btn-outline-secondary")">Nha sĩ</a>
+        <a href="@Url.Action("Index", new { role = "Patient" })" class="btn @(selectedRole == "Patient" ? "btn-secondary" : "btn-outline-secondary")">Khách hàng</a>
+    </div>
+</div>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Email</th>
+            <th>Full Name</th>
+            <th>Roles</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Email</td>
+                <td>@user.FullName</td>
+                <td>
+                    @if (userRoles != null && userRoles.ContainsKey(user.Id))
+                    {
+                        @string.Join(", ", userRoles[user.Id])
+                    }
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@user.Id" class="btn btn-info btn-sm">Details</a> |
+                    <a asp-action="Edit" asp-route-id="@user.Id" class="btn btn-warning btn-sm">Edit</a> |
+                    <a asp-action="Delete" asp-route-id="@user.Id" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
